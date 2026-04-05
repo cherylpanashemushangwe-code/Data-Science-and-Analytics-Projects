@@ -18,7 +18,7 @@ This project builds a machine learning prediction model to identify which U.S. h
 |---------|--------|
 | **22% of hospitals** already have negative operating margins | 956 out of 4,468 hospitals are losing money *before* any cuts |
 | **481 hospitals classified as HIGH RISK** | Multiple simultaneous distress signals detected |
-| **217 hospitals disappeared** from 2020–2024 | Real closures/mergers that validate the model's patterns |
+| **217 hospitals disappeared** from 2020-2024 | Real closures/mergers that validate the model's patterns |
 | **Rural hospitals face 2x the risk** of urban hospitals | 75% of high-risk hospitals are rural |
 | **20% Medicaid cut** pushes hundreds more into distress | Scenario simulation shows cascading impact |
 
