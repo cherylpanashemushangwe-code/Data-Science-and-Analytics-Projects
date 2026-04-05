@@ -1,4 +1,4 @@
-#Hospital Closure Risk Prediction Model by Cheryl Mushangwe
+Hospital Closure Risk Prediction Model by Cheryl Mushangwe
 
 **Assessing the Impact of OBBBA Medicaid Cuts on U.S. Hospital Financial Viability**
 
