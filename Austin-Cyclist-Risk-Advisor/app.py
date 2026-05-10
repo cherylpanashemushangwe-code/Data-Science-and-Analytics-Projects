@@ -45,7 +45,7 @@ html, body, [class*="css"] { background-color: #0e1117; color: #f0f0f0; }
 #DATA LOADING
 @st.cache_data
 def load_data():
-    df = pd.read_csv(r"C:\Users\chery\Downloads\bike_crash-B-PF307G4M.csv")
+    df = pd.read_csv("bike_crash-B-PF307G4M.csv")
 
     # Parse HHMM integer → hour
     df["Crash Time"] = pd.to_numeric(df["Crash Time"], errors="coerce")
