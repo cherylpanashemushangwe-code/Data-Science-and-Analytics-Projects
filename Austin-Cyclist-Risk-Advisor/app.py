@@ -45,7 +45,24 @@ html, body, [class*="css"] { background-color: #0e1117; color: #f0f0f0; }
 #DATA LOADING
 @st.cache_data
 def load_data():
-    df = pd.read_csv("bike_crash-B-PF307G4M.csv")
+    import os
+    # Try multiple locations: same folder as script, current dir, then GitHub raw URL
+    here = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        os.path.join(here, "bike_crash-B-PF307G4M.csv"),
+        "bike_crash-B-PF307G4M.csv",
+        "https://raw.githubusercontent.com/cherylpanashemushangwe-code/Data-Science-and-Analytics-Projects/main/Austin-Cyclist-Risk-Advisor/bike_crash-B-PF307G4M.csv",
+    ]
+    df = None
+    for path in candidates:
+        try:
+            df = pd.read_csv(path)
+            break
+        except Exception:
+            continue
+    if df is None:
+        st.error("Could not load the crash dataset. Please ensure bike_crash-B-PF307G4M.csv is available.")
+        st.stop()
 
     # Parse HHMM integer → hour
     df["Crash Time"] = pd.to_numeric(df["Crash Time"], errors="coerce")
