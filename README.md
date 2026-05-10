@@ -155,5 +155,5 @@ pip install -r requirements.txt
 
 ## Author
 
-**Cheryl**- M.P.S. in Analytics, Northeastern University (Expected December 2026)
+**Cheryl**- M.P.S. in Analytics and Statistical Modeling, Northeastern University
 
