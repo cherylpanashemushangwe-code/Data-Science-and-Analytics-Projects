@@ -6,27 +6,27 @@ An interactive analytics application that helps Austin cyclists make safer go/no
 
 ## Overview
 
-The City of Austin has recorded over **2,463 cyclist-vehicle crashes** between 2010 and 2017. This application transforms that raw crash data into a decision-focused tool that any cyclist can use before heading out — no data analysis skills required.
+The City of Austin has recorded over **2,463 cyclist-vehicle crashes** between 2010 and 2017. This application transforms that raw crash data into a decision-focused tool that any cyclist can use before heading out:no data analysis skills required.
 
 Instead of showing a spreadsheet or a generic chart, the app asks three simple questions:
 - **What time are you leaving?**
 - **What day is it?**
 - **Is the road dry or wet?**
 
-And returns one clear answer: **LOW RISK / MODERATE RISK / HIGH RISK** — with a recommendation and the historical evidence behind it.
+And returns one clear answer: **LOW RISK / MODERATE RISK / HIGH RISK** - with a recommendation and the historical evidence behind it.
 
 ---
 
 ## Features
 
-- **Risk Level Banner** — color-coded LOW / MODERATE / HIGH verdict based on historical crash patterns
-- **Risk Score Gauge** — 0–100 composite score driven by hour, day, and surface condition
-- **Actionable Recommendation** — one-sentence guidance for every risk level
-- **Low-Data Warning** — flags when fewer than 5 historical incidents match your exact conditions
-- **Safest Hours Suggestion** — shows the historically lowest-crash departure windows
-- **Interactive Charts** — crashes by hour, day of week, severity distribution, surface condition, and speed limit
-- **Year-over-Year Trend** — total incidents and fatal crashes from 2010–2017
-- **Raw Data Explorer** — filterable table of all 2,463 crash records
+- **Risk Level Banner** - color-coded LOW / MODERATE / HIGH verdict based on historical crash patterns
+- **Risk Score Gauge** - 0-100 composite score driven by hour, day, and surface condition
+- **Actionable Recommendation** - one-sentence guidance for every risk level
+- **Low-Data Warning** - flags when fewer than 5 historical incidents match your exact conditions
+- **Safest Hours Suggestion** - shows the historically lowest-crash departure windows
+- **Interactive Charts** - crashes by hour, day of week, severity distribution, surface condition, and speed limit
+- **Year-over-Year Trend** - total incidents and fatal crashes from 2010–2017
+- **Raw Data Explorer** - filterable table of all 2,463 crash records
 
 ---
 
@@ -42,9 +42,9 @@ The risk score is a weighted composite of three data-driven components:
 
 | Score Range | Risk Level |
 |---|---|
-| 0 – 37 | ✅ Low Risk |
-| 38 – 61 | ⚠️ Moderate Risk |
-| 62 – 100 | 🚨 High Risk |
+| 0 - 37 | ✅ Low Risk |
+| 38 - 61 | ⚠️ Moderate Risk |
+| 62 - 100 | 🚨 High Risk |
 
 ---
 
@@ -54,7 +54,7 @@ The risk score is a weighted composite of three data-driven components:
 |---|---|
 | Source | City of Austin Open Data Portal |
 | Records | 2,463 cyclist-vehicle crashes |
-| Years | 2010 – 2017 |
+| Years | 2010 - 2017 |
 | Key columns used | Crash Time, Day of Week, Surface Condition, Crash Severity, Crash Year, Speed Limit |
 
 ---
@@ -113,7 +113,7 @@ Austin-Cyclist-Risk-Advisor/
 
 ## Key Findings from the Data
 
-- **5 PM (17:00)** is the single most dangerous hour — crash volume peaks during evening commute
+- **5 PM (17:00)** is the single most dangerous hour - crash volume peaks during evening commute
 - **Fridays** have the highest crash count of any day of the week
 - **11% of all crashes** resulted in incapacitating injury or death
 - **Wet-surface crashes** average a higher severity score (1.88) than dry-surface crashes (1.75)
@@ -123,8 +123,7 @@ Austin-Cyclist-Risk-Advisor/
 
 ## Course Information
 
-**Course:** ALY6040 — Data Analytics and Visualization  
-**Assignment:** Week 4 — Building Analytics Products  
+**Course:** ALY6040 - Data Mining    
 **Institution:** Northeastern University  
 **Author:** Cheryl Mushangwe  
 
