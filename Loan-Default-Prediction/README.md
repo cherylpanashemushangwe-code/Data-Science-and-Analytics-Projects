@@ -1,6 +1,6 @@
 # 🏦 SecureBank Loan Default Prediction
 
-> Predicting which loan applicants are likely to default **before** approval — and turning that prediction into a cost-optimal lending policy.
+> Predicting which loan applicants are likely to default **before** approval and turning that prediction into a cost-optimal lending policy.
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-orange?logo=scikitlearn&logoColor=white)
@@ -33,7 +33,7 @@ SecureBank wants to predict loan defaults at the point of application. The two p
 | **False Negative** | Approve a borrower who later **defaults** | **$15,000** |
 | **False Positive** | Reject a **creditworthy** borrower | **$2,000** |
 
-That **7.5 : 1 cost ratio** means the model should prioritise **recall** (catching defaulters) over raw accuracy. A classifier that simply predicts "no default" for everyone would score ~70% accuracy yet be useless — so this project evaluates models on **F1, recall, and AUC**, and derives a **cost-optimal decision threshold**.
+That **7.5 : 1 cost ratio** means the model should prioritise **recall** (catching defaulters) over raw accuracy. A classifier that simply predicts "no default" for everyone would score ~70% accuracy yet be useless so this project evaluates models on **F1, recall, and AUC**, and derives a **cost-optimal decision threshold**.
 
 ---
 
@@ -64,14 +64,14 @@ Three models were trained on an 80/20 stratified split of ~2,559 applicants (37 
 ## 💡 Findings & Recommendations
 
 **Strongest predictors of default**
-1. **Checking-account status** — overdrawn accounts default at ~49% vs ~12% for applicants with no checking account.
-2. **Loan duration** — each additional standard deviation raises the odds of default by ~36%.
-3. **Instalment rate (% of income)** — higher repayment burden strongly predicts stress.
-4. **Credit history** — prior delays / critical accounts are classic warning signs.
-5. **Savings balance** — little or no savings means no financial buffer.
+1. **Checking-account status** - overdrawn accounts default at ~49% vs ~12% for applicants with no checking account.
+2. **Loan duration** - each additional standard deviation raises the odds of default by ~36%.
+3. **Instalment rate (% of income)** - higher repayment burden strongly predicts stress.
+4. **Credit history** - prior delays / critical accounts are classic warning signs.
+5. **Savings balance** - little or no savings means no financial buffer.
 
 **Recommendation to the CRO**
-- Deploy the **stepwise Logistic Regression** with a **cost-tuned threshold (~0.10–0.12)** as the primary scorecard — it is interpretable (odds ratios), parsimonious (17 features), and aligned to the cost asymmetry. Use the **SVM as a secondary validation model**.
+- Deploy the **stepwise Logistic Regression** with a **cost-tuned threshold (~0.10–0.12)** as the primary scorecard - it is interpretable (odds ratios), parsimonious (17 features), and aligned to the cost asymmetry. Use the **SVM as a secondary validation model**.
 - **Ethics / compliance:** `Personal_Status` (gender-related) and `Is_Foreign_Worker` (national origin) should be **excluded from production scoring** regardless of predictive power, to comply with fair-lending law (e.g., ECOA).
 - **Monitoring:** retrain at least annually; track KS-statistic and Gini monthly; retrain if AUC drops below 0.70 on live data.
 
@@ -130,7 +130,7 @@ All paths are resolved relative to the repository, so everything runs without ed
 
 ## 🔬 Methodology
 
-**Data cleaning** — median imputation for missing numerical values (Age, Loan Amount, Loan Duration, Employment Duration); correction of 5 negative loan amounts and 3 impossible ages.
+**Data cleaning** - median imputation for missing numerical values (Age, Loan Amount, Loan Duration, Employment Duration); correction of 5 negative loan amounts and 3 impossible ages.
 
 **Feature encoding**
 - **Ordinal** for naturally ranked variables (checking/savings balance, employment length, credit history).
@@ -154,7 +154,7 @@ All paths are resolved relative to the repository, so everything runs without ed
 ## 👤 Author
 
 **Cheryl Mushangwe**
-Data Analytics
+Analytics
 
 - GitHub: [@cherylpanashemushangwe-code](https://github.com/cherylpanashemushangwe-code)
 <!-- - LinkedIn: https://linkedin.com/in/your-handle -->
