@@ -1,0 +1,6 @@
+# Data files (load locally, do not commit)
+*.csv
+
+# OS
+.DS_Store
+Thumbs.db

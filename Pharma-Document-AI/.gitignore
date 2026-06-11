@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Secrets (never commit API keys)
+.env
+*.key
+secrets.*
+
+# Data and large artifacts
+data/
+*.zip
+*.pdf
+
+# OS
+.DS_Store
+Thumbs.db

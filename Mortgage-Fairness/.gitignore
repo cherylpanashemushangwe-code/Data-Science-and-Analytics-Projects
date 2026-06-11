@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+*.key
+secrets.*
+
+# Generated dashboard data
+powerbi_data/
+
+# Data and large artifacts
+data/
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db
