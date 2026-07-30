@@ -1,8 +1,4 @@
--- ============================================================================
--- RetailPulse — Customer Revenue & Cohort Analytics Engine
 -- 03_analytics_engine.sql | Business-Ready Analytics Layer
--- ============================================================================
---
 -- STRUCTURE:
 --   Part 1  →  Revenue Intelligence          (aggregation, date functions)
 --   Part 2  →  Customer Segmentation         (CASE, CTEs, subqueries)
@@ -14,19 +10,12 @@
 -- Each query includes:
 --   • Business question it answers
 --   • SQL skills it demonstrates
---   • Commentary on performance considerations
--- ============================================================================
 
-
--- ╔══════════════════════════════════════════════════════════════════════════╗
--- ║  PART 1: REVENUE INTELLIGENCE                                          ║
--- ╚══════════════════════════════════════════════════════════════════════════╝
-
--- ──────────────────────────────────────────────────────────────────────────
+--  PART 1: REVENUE INTELLIGENCE                                          
 -- Q1. Monthly Revenue Trend with MoM Growth Rate
 -- Business Q: How is top-line revenue trending, and which months accelerated?
--- Skills:     DATE_TRUNC, aggregate + window function combo, LAG, ROUND
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: DATE_TRUNC, aggregate + window function combo, LAG, ROUND
+
 SELECT
     DATE_TRUNC('month', o.order_date)::DATE          AS revenue_month,
     COUNT(DISTINCT o.order_id)                        AS total_orders,
@@ -49,12 +38,10 @@ WHERE o.order_status = 'completed'
 GROUP BY DATE_TRUNC('month', o.order_date)
 ORDER BY revenue_month;
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q2. Year-over-Year Revenue Comparison by Quarter
 -- Business Q: Are we growing YoY, and which quarters drive the most revenue?
--- Skills:     EXTRACT, conditional aggregation (FILTER), pivoting with CASE
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: EXTRACT, conditional aggregation (FILTER), pivoting with CASE
+
 SELECT
     EXTRACT(QUARTER FROM o.order_date)::INT AS quarter,
 
@@ -84,12 +71,8 @@ WHERE o.order_status = 'completed'
 GROUP BY EXTRACT(QUARTER FROM o.order_date)
 ORDER BY quarter;
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q3. 3-Month Rolling Average Revenue
 -- Business Q: What's the smoothed revenue trend removing seasonal noise?
--- Skills:     Window frame (ROWS BETWEEN), named CTE for readability
--- ──────────────────────────────────────────────────────────────────────────
 WITH monthly_rev AS (
     SELECT
         DATE_TRUNC('month', o.order_date)::DATE AS revenue_month,
@@ -111,12 +94,8 @@ SELECT
 FROM monthly_rev
 ORDER BY revenue_month;
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q4. Revenue by Acquisition Channel
 -- Business Q: Which channels bring the highest-value customers?
--- Skills:     Multi-table JOIN, GROUP BY with business dimension
--- ──────────────────────────────────────────────────────────────────────────
 SELECT
     c.acquisition_channel,
     COUNT(DISTINCT c.customer_id)   AS total_customers,
@@ -134,17 +113,10 @@ WHERE o.order_status = 'completed'
 GROUP BY c.acquisition_channel
 ORDER BY revenue_per_customer DESC;
 
-
--- ╔══════════════════════════════════════════════════════════════════════════╗
--- ║  PART 2: CUSTOMER SEGMENTATION                                         ║
--- ╚══════════════════════════════════════════════════════════════════════════╝
-
--- ──────────────────────────────────────────────────────────────────────────
+-- PART 2: CUSTOMER SEGMENTATION                                         
 -- Q5. RFM Segmentation (Recency, Frequency, Monetary)
 -- Business Q: Who are our best, at-risk, and dormant customers?
--- Skills:     Multiple CTEs chained, NTILE, CASE-based bucketing, CONCAT
--- Performance: Uses NTILE for quartile assignment — scales well on indexed data
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: Multiple CTEs chained, NTILE, CASE-based bucketing, CONCAT
 WITH customer_metrics AS (
     SELECT
         c.customer_id,
@@ -193,12 +165,9 @@ SELECT
 FROM rfm_scores
 ORDER BY rfm_total DESC;
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q6. Customer Lifetime Value (CLV) — Simplified Historical
 -- Business Q: What is each customer worth and what's the distribution?
--- Skills:     DATE_PART, GREATEST to avoid division by zero, percentile
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: DATE_PART, GREATEST to avoid division by zero, percentile
 WITH clv_base AS (
     SELECT
         c.customer_id,
@@ -228,12 +197,9 @@ FROM clv_base
 ORDER BY lifetime_revenue DESC
 LIMIT 50;
 
-
--- ──────────────────────────────────────────────────────────────────────────
--- Q7. Churn Identification — Customers Inactive 90+ Days
+-- Q7. Churn Identification - Customers Inactive 90+ Days
 -- Business Q: Who has stopped buying and when did we lose them?
--- Skills:     NOT EXISTS, date arithmetic, segmented counting
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: NOT EXISTS, date arithmetic, segmented counting
 WITH customer_last_order AS (
     SELECT
         c.customer_id,
@@ -263,12 +229,9 @@ SELECT
 FROM customer_last_order
 ORDER BY days_since_last_order DESC NULLS FIRST;
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q8. Churn Summary by Acquisition Channel
 -- Business Q: Which channels have the worst retention?
--- Skills:     CTE reuse, conditional COUNT, percentage calculation
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: CTE reuse, conditional COUNT, percentage calculation
 WITH customer_status AS (
     SELECT
         c.customer_id,
@@ -299,17 +262,11 @@ FROM customer_status
 GROUP BY acquisition_channel
 ORDER BY churn_rate_pct DESC;
 
-
--- ╔══════════════════════════════════════════════════════════════════════════╗
--- ║  PART 3: COHORT & RETENTION ANALYSIS                                   ║
--- ╚══════════════════════════════════════════════════════════════════════════╝
-
--- ──────────────────────────────────────────────────────────────────────────
+-- PART 3: COHORT & RETENTION ANALYSIS                                   
 -- Q9. Monthly Signup Cohort Retention Matrix
 -- Business Q: What % of each signup cohort is still buying N months later?
--- Skills:     Self-join via CTE, DATE_TRUNC, pivot with conditional agg,
---             cohort math — this is the #1 most asked analytics interview query
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: Self-join via CTE, DATE_TRUNC, pivot with conditional agg,
+
 WITH cohort_base AS (
     SELECT
         c.customer_id,
@@ -349,12 +306,9 @@ JOIN cohort_size cs ON cs.cohort_month = ca.cohort_month
 WHERE ca.months_since_signup BETWEEN 0 AND 12
 ORDER BY ca.cohort_month, ca.months_since_signup;
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q10. Quarterly Cohort Revenue Over Time
 -- Business Q: Which signup cohorts generate the most revenue long-term?
--- Skills:     Revenue-based cohort, multiple aggregation layers
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: Revenue-based cohort, multiple aggregation layers
 WITH cohort_rev AS (
     SELECT
         DATE_TRUNC('quarter', c.signup_date)::DATE AS signup_quarter,
@@ -378,12 +332,9 @@ SELECT
 FROM cohort_rev
 ORDER BY signup_quarter, order_quarter;
 
-
--- ──────────────────────────────────────────────────────────────────────────
--- Q11. Repeat Purchase Rate — First vs Repeat Orders
+-- Q11. Repeat Purchase Rate - First vs Repeat Orders
 -- Business Q: What % of customers come back after their first order?
--- Skills:     ROW_NUMBER to tag first order, conditional aggregation
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: ROW_NUMBER to tag first order, conditional aggregation
 WITH numbered_orders AS (
     SELECT
         customer_id,
@@ -409,16 +360,10 @@ WHERE n1.order_seq = 1
 GROUP BY DATE_TRUNC('quarter', n1.order_date)
 ORDER BY first_order_quarter;
 
-
--- ╔══════════════════════════════════════════════════════════════════════════╗
--- ║  PART 4: PRODUCT & MARGIN ANALYTICS                                    ║
--- ╚══════════════════════════════════════════════════════════════════════════╝
-
--- ──────────────────────────────────────────────────────────────────────────
+-- PART 4: PRODUCT & MARGIN ANALYTICS                                    
 -- Q12. Product Profitability Ranking
 -- Business Q: Which products contribute most to gross profit?
--- Skills:     Multi-table JOIN (4 tables), calculated margin, RANK
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: Multi-table JOIN (4 tables), calculated margin, RANK
 SELECT
     p.product_name,
     cat.category_name,
@@ -448,12 +393,9 @@ WHERE o.order_status = 'completed'
 GROUP BY p.product_name, cat.category_name
 ORDER BY gross_profit DESC;
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q13. Category Margin vs Target (actual vs plan)
 -- Business Q: Which categories are hitting their margin target?
--- Skills:     Comparison to benchmark, CASE flagging
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: Comparison to benchmark, CASE flagging
 SELECT
     cat.category_name,
     cat.margin_target * 100                                        AS target_margin_pct,
@@ -479,12 +421,9 @@ WHERE o.order_status = 'completed'
 GROUP BY cat.category_name, cat.margin_target
 ORDER BY actual_margin_pct DESC;
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q14. Product Return Rate with Revenue Impact
 -- Business Q: Which products are returned most and how much does it cost us?
--- Skills:     LEFT JOIN to include non-returned items, ratio calculation
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: LEFT JOIN to include non-returned items, ratio calculation
 SELECT
     p.product_name,
     cat.category_name,
@@ -504,16 +443,12 @@ LEFT JOIN returns r ON r.order_item_id = oi.order_item_id
 LEFT JOIN product_reviews pr ON pr.product_id = p.product_id
 WHERE o.order_status = 'completed'
 GROUP BY p.product_name, cat.category_name
-HAVING COUNT(DISTINCT oi.order_item_id) >= 50   -- meaningful sample only
+HAVING COUNT(DISTINCT oi.order_item_id) >= 50   
 ORDER BY return_rate_pct DESC;
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q15. Top Product Pairs (Market Basket Analysis — Simplified)
 -- Business Q: Which products are most frequently bought together?
--- Skills:     Self-join on order_items, deduplication, frequency counting
--- Performance note: Self-join can be expensive — WHERE clause limits scope
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: Self-join on order_items, deduplication, frequency counting
 SELECT
     p1.product_name AS product_a,
     p2.product_name AS product_b,
@@ -530,16 +465,10 @@ HAVING COUNT(*) >= 10
 ORDER BY times_bought_together DESC
 LIMIT 25;
 
-
--- ╔══════════════════════════════════════════════════════════════════════════╗
--- ║  PART 5: ADVANCED BUSINESS METRICS                                     ║
--- ╚══════════════════════════════════════════════════════════════════════════╝
-
--- ──────────────────────────────────────────────────────────────────────────
+-- PART 5: ADVANCED BUSINESS METRICS                                     
 -- Q16. Running Total Revenue + Cumulative Customer Count
 -- Business Q: How do revenue and customer base accumulate over time?
--- Skills:     Window SUM with ORDER BY (running total), COUNT DISTINCT trick
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills:     Window SUM with ORDER BY (running total), COUNT DISTINCT 
 WITH monthly_metrics AS (
     SELECT
         DATE_TRUNC('month', o.order_date)::DATE AS month,
@@ -561,12 +490,9 @@ SELECT
 FROM monthly_metrics
 ORDER BY month;
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q17. Average Order Value Percentiles & Distribution
 -- Business Q: What does our AOV distribution look like? Where are outliers?
--- Skills:     PERCENTILE_CONT (ordered-set aggregate), bucketing
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: PERCENTILE_CONT (ordered-set aggregate), bucketing
 WITH order_totals AS (
     SELECT
         o.order_id,
@@ -588,12 +514,9 @@ SELECT
     ROUND(MAX(order_total), 2)                                      AS max_order
 FROM order_totals;
 
-
--- ──────────────────────────────────────────────────────────────────────────
--- Q18. Days Between Orders — Purchase Frequency Analysis
+-- Q18. Days Between Orders - Purchase Frequency Analysis
 -- Business Q: How often do repeat customers come back?
 -- Skills:     LAG for inter-event timing, EXTRACT, distribution analysis
--- ──────────────────────────────────────────────────────────────────────────
 WITH order_gaps AS (
     SELECT
         customer_id,
@@ -629,12 +552,9 @@ GROUP BY
     END
 ORDER BY MIN(days_between_orders);
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q19. Shipping Performance Scorecard by Carrier
 -- Business Q: Which carriers deliver fastest and at what cost?
--- Skills:     Date subtraction, conditional flagging, multiple metrics
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: Date subtraction, conditional flagging, multiple metrics
 SELECT
     s.carrier,
     COUNT(*)                                                      AS shipments,
@@ -652,12 +572,9 @@ FROM shipping s
 GROUP BY s.carrier
 ORDER BY avg_delivery_days;
 
-
--- ──────────────────────────────────────────────────────────────────────────
 -- Q20. Payment Method Revenue Share — Trending Over Time
 -- Business Q: How is our payment mix shifting? Is Apple Pay growing?
--- Skills:     Pivot-style conditional aggregation, trend analysis
--- ──────────────────────────────────────────────────────────────────────────
+-- Skills: Pivot-style conditional aggregation, trend analysis
 SELECT
     DATE_TRUNC('quarter', p.payment_date)::DATE AS quarter,
     ROUND(SUM(amount) FILTER (WHERE payment_method = 'credit_card'), 2)  AS credit_card,
@@ -670,16 +587,9 @@ FROM payments p
 GROUP BY DATE_TRUNC('quarter', p.payment_date)
 ORDER BY quarter;
 
+--PART 6: REPORTING VIEWS (Production-Ready Analytics Layer)            
 
--- ╔══════════════════════════════════════════════════════════════════════════╗
--- ║  PART 6: REPORTING VIEWS (Production-Ready Analytics Layer)            ║
--- ╚══════════════════════════════════════════════════════════════════════════╝
--- These views simulate what you'd build for a BI tool like Tableau/Looker.
--- Hiring managers love seeing that you think about the consumption layer.
-
--- ──────────────────────────────────────────────────────────────────────────
 -- V1. Executive Revenue Dashboard View
--- ──────────────────────────────────────────────────────────────────────────
 CREATE OR REPLACE VIEW v_executive_dashboard AS
 SELECT
     DATE_TRUNC('month', o.order_date)::DATE     AS month,
@@ -700,10 +610,7 @@ LEFT JOIN returns r ON r.order_item_id = oi.order_item_id
 WHERE o.order_status = 'completed'
 GROUP BY DATE_TRUNC('month', o.order_date);
 
-
--- ──────────────────────────────────────────────────────────────────────────
--- V2. Customer 360 View — single row per customer with all key metrics
--- ──────────────────────────────────────────────────────────────────────────
+-- V2. Customer 360 View - single row per customer with all key metrics
 CREATE OR REPLACE VIEW v_customer_360 AS
 SELECT
     c.customer_id,
@@ -729,10 +636,7 @@ LEFT JOIN returns r        ON r.order_item_id  = oi.order_item_id
 GROUP BY c.customer_id, c.first_name, c.last_name, c.email,
          c.signup_date, c.city, c.state, c.acquisition_channel;
 
-
--- ──────────────────────────────────────────────────────────────────────────
--- V3. Product Performance View — for category managers / merchandising
--- ──────────────────────────────────────────────────────────────────────────
+-- V3. Product Performance View - for category managers / merchandising
 CREATE OR REPLACE VIEW v_product_performance AS
 SELECT
     p.product_id,
@@ -758,24 +662,3 @@ LEFT JOIN returns r    ON r.order_item_id = oi.order_item_id
 GROUP BY p.product_id, p.product_name, cat.category_name,
          p.unit_cost, p.unit_price, p.is_active;
 
-
--- ============================================================================
--- END OF ANALYTICS ENGINE
--- ============================================================================
--- Skills demonstrated across this file:
---   ✓ JOINs (INNER, LEFT, self-join)
---   ✓ Aggregations (SUM, COUNT, AVG, MIN, MAX)
---   ✓ Window functions (LAG, ROW_NUMBER, RANK, NTILE, SUM OVER, PERCENT_RANK)
---   ✓ Window frames (ROWS BETWEEN)
---   ✓ CTEs (single, chained multi-step)
---   ✓ Subqueries (scalar, correlated)
---   ✓ CASE expressions (simple and searched)
---   ✓ FILTER clause (PostgreSQL conditional aggregation)
---   ✓ Date functions (DATE_TRUNC, EXTRACT, DATE_PART, AGE)
---   ✓ PERCENTILE_CONT (ordered-set aggregate)
---   ✓ NULLIF / COALESCE for safe division
---   ✓ CREATE VIEW for reporting layer
---   ✓ Indexing strategy (schema file)
---   ✓ CHECK constraints and data validation
---   ✓ Performance-conscious comments
--- ============================================================================
