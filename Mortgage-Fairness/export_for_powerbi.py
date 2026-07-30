@@ -54,7 +54,7 @@ RACE_MAP = {
 
 
 # ── Download ──────────────────────────────────────────────────────────────────
-print(f"Downloading HMDA {args.year} — {args.state} ...")
+print(f"Downloading HMDA {args.year} - {args.state} ...")
 url = (
     f"https://ffiec.cfpb.gov/v2/data-browser-api/view/csv"
     f"?years={args.year}&states={args.state}&actions_taken=1,3"
@@ -124,7 +124,7 @@ df["high_cost_loan"] = (df["rate_spread"] > 1.5).astype(float)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TABLE 1 — Main fact table  (one row per application)
+# TABLE 1 - Main fact table  (one row per application)
 # Power BI: import as "Applications"
 # ═══════════════════════════════════════════════════════════════════════════════
 fact_cols = [
@@ -135,11 +135,11 @@ fact_cols = [
 ]
 fact = df[[c for c in fact_cols if c in df.columns]].copy()
 fact.to_csv(OUT / "applications.csv", index=False)
-print(f"  Table 1 saved → powerbi_data/applications.csv  ({len(fact):,} rows)")
+print(f"  Table 1 saved -> powerbi_data/applications.csv  ({len(fact):,} rows)")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TABLE 2 — Disparity ratios by race  (pre-aggregated for KPI visuals)
+# TABLE 2 - Disparity ratios by race  (pre-aggregated for KPI visuals)
 # Power BI: import as "Disparity"
 # ═══════════════════════════════════════════════════════════════════════════════
 disp = (
@@ -155,11 +155,11 @@ disp["year"]             = args.year
 disp["state"]            = args.state
 
 disp.to_csv(OUT / "disparity.csv", index=False)
-print(f"  Table 2 saved → powerbi_data/disparity.csv  ({len(disp)} rows)")
+print(f"  Table 2 saved -> powerbi_data/disparity.csv  ({len(disp)} rows)")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TABLE 3 — Income bracket × Race  (for income analysis visual)
+# TABLE 3 - Income bracket × Race  (for income analysis visual)
 # Power BI: import as "IncomeRace"
 # ═══════════════════════════════════════════════════════════════════════════════
 income_race = (
@@ -178,11 +178,11 @@ bracket_order = {"<$50k": 1, "$50-75k": 2, "$75-100k": 3,
 income_race["bracket_sort"] = income_race["income_bracket"].map(bracket_order)
 
 income_race.to_csv(OUT / "income_race.csv", index=False)
-print(f"  Table 3 saved → powerbi_data/income_race.csv  ({len(income_race)} rows)")
+print(f"  Table 3 saved -> powerbi_data/income_race.csv  ({len(income_race)} rows)")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TABLE 4 — Geographic summary by county  (for map visual)
+# TABLE 4 - Geographic summary by county  (for map visual)
 # Power BI: import as "Geography"
 # ═══════════════════════════════════════════════════════════════════════════════
 geo = (
@@ -213,20 +213,20 @@ def risk_tier(rate):
 geo["risk_tier"] = geo["denial_rate"].apply(risk_tier)
 
 geo.to_csv(OUT / "geography.csv", index=False)
-print(f"  Table 4 saved → powerbi_data/geography.csv  ({len(geo)} rows)")
+print(f"  Table 4 saved -> powerbi_data/geography.csv  ({len(geo)} rows)")
 
 
 # ── Summary ───────────────────────────────────────────────────────────────────
 print(f"""
 ═══════════════════════════════════════════════════════
-  Export complete — {args.year} | {args.state}
+  Export complete - {args.year} | {args.state}
 ═══════════════════════════════════════════════════════
   Files in:  mortgage-fairness/powerbi_data/
 
-  1. applications.csv  — {len(fact):,} rows   (main fact table)
-  2. disparity.csv     — {len(disp)} rows     (disparity ratios by race)
-  3. income_race.csv   — {len(income_race)} rows  (income × race breakdown)
-  4. geography.csv     — {len(geo)} rows    (county-level denial rates)
+  1. applications.csv - {len(fact):,} rows   (main fact table)
+  2. disparity.csv - {len(disp)} rows     (disparity ratios by race)
+  3. income_race.csv - {len(income_race)} rows  (income × race breakdown)
+  4. geography.csv - {len(geo)} rows    (county-level denial rates)
 
   Next: open Power BI Desktop and follow POWERBI_GUIDE.md
 ═══════════════════════════════════════════════════════

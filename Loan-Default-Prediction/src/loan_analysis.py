@@ -1,5 +1,5 @@
 """
-SecureBank Loan Default Prediction — Full Analysis Script
+SecureBank Loan Default Prediction - Full Analysis Script
 Generates all figures, runs three models, and produces the Word document report.
 Run: python loan_analysis.py
 """
@@ -52,7 +52,7 @@ BLUE  = "#1A5276"
 ORG   = "#CA6F1E"
 
 print("=" * 65)
-print("  SecureBank Loan Default Prediction — Analysis Script")
+print("  SecureBank Loan Default Prediction - Analysis Script")
 print("=" * 65)
 
 # =============================================================================
@@ -113,7 +113,7 @@ if n_neg:
 
 target_counts = df["Loan_Default"].value_counts()
 default_rate  = (target_counts.get("Yes", 0) / len(df) * 100)
-print(f"\nClass distribution — No: {target_counts.get('No',0)}  "
+print(f"\nClass distribution - No: {target_counts.get('No',0)}  "
       f"Yes: {target_counts.get('Yes',0)}  "
       f"Default rate: {default_rate:.1f}%")
 
@@ -304,9 +304,9 @@ X_tr_df = pd.DataFrame(X_tr_sc, columns=ALL_FEATURES)
 X_te_df = pd.DataFrame(X_te_sc, columns=ALL_FEATURES)
 
 # =============================================================================
-# 6.  MODEL 1 — LOGISTIC REGRESSION BASELINE (all features)
+# 6.  MODEL 1 - LOGISTIC REGRESSION BASELINE (all features)
 # =============================================================================
-print("\n[6] Model 1 — LR Baseline ...")
+print("\n[6] Model 1 - LR Baseline ...")
 lr1 = LogisticRegression(max_iter=3000, random_state=42, C=1.0, solver="lbfgs")
 lr1.fit(X_tr_sc, y_train)
 yp1  = lr1.predict(X_te_sc)
@@ -335,15 +335,15 @@ print(coef_df.head(10).to_string(index=False))
 fig, ax = plt.subplots(figsize=(6, 5))
 ConfusionMatrixDisplay(cm1, display_labels=["No Default","Default"]).plot(
     ax=ax, colorbar=False, cmap="Blues", values_format="d")
-ax.set_title("Figure 5: Confusion Matrix\nModel 1 — LR Baseline", pad=10)
+ax.set_title("Figure 5: Confusion Matrix\nModel 1 - LR Baseline", pad=10)
 plt.tight_layout()
 plt.savefig(os.path.join(FIGS, "fig5_cm_lr1.png"), bbox_inches="tight")
 plt.close()
 
 # =============================================================================
-# 7.  MODEL 2 — OPTIMIZED LR (Backward Elimination)
+# 7.  MODEL 2 - OPTIMIZED LR (Backward Elimination)
 # =============================================================================
-print("\n[7] Model 2 — Backward Elimination ...")
+print("\n[7] Model 2 - Backward Elimination ...")
 
 def backward_elim(X_df, y_ser, threshold=0.05):
     features = list(X_df.columns)
@@ -365,7 +365,7 @@ def backward_elim(X_df, y_ser, threshold=0.05):
                 removed_log.append((worst_f, round(worst_p, 4)))
                 print(f"    Iter {itr:3d}: removed '{worst_f}'  p={worst_p:.4f}")
             else:
-                print(f"    Converged — {len(features)} features retained "
+                print(f"    Converged - {len(features)} features retained "
                       f"(max p={worst_p:.4f})")
                 break
         except Exception as exc:
@@ -402,7 +402,7 @@ sel_coef_df = pd.DataFrame({
 fig, ax = plt.subplots(figsize=(6, 5))
 ConfusionMatrixDisplay(cm2, display_labels=["No Default","Default"]).plot(
     ax=ax, colorbar=False, cmap="Greens", values_format="d")
-ax.set_title("Figure 6: Confusion Matrix\nModel 2 — Optimized LR", pad=10)
+ax.set_title("Figure 6: Confusion Matrix\nModel 2 - Optimized LR", pad=10)
 plt.tight_layout()
 plt.savefig(os.path.join(FIGS, "fig6_cm_lr2.png"), bbox_inches="tight")
 plt.close()
@@ -421,16 +421,16 @@ for i, (coef, oratio) in enumerate(zip(sorted_sel["Coeff"], sorted_sel["Odds_Rat
     offset = 0.01 if coef >= 0 else -0.01
     ax.text(coef+offset, i, f"OR={oratio:.2f}", va="center", ha=ha, fontsize=8)
 ax.set_xlabel("Log-Odds Coefficient")
-ax.set_title("Figure 9: Model 2 — Feature Coefficients & Odds Ratios\n"
+ax.set_title("Figure 9: Model 2 - Feature Coefficients & Odds Ratios\n"
              "(Red = Increases Default Risk  |  Green = Reduces Default Risk)", pad=10)
 plt.tight_layout()
 plt.savefig(os.path.join(FIGS, "fig9_coeff.png"), bbox_inches="tight")
 plt.close()
 
 # =============================================================================
-# 8.  MODEL 3 — SVM (RBF KERNEL)
+# 8.  MODEL 3 - SVM (RBF KERNEL)
 # =============================================================================
-print("\n[8] Model 3 — SVM RBF ...")
+print("\n[8] Model 3 - SVM RBF ...")
 svm = SVC(kernel="rbf", probability=True, random_state=42, C=1.0, gamma="scale")
 svm.fit(X_tr_sc, y_train)
 yp3  = svm.predict(X_te_sc)
@@ -449,7 +449,7 @@ print(f"    Acc={acc3:.4f}  Prec={prec3:.4f}  Rec={rec3:.4f}  F1={f1_3:.4f}  AUC
 fig, ax = plt.subplots(figsize=(6, 5))
 ConfusionMatrixDisplay(cm3, display_labels=["No Default","Default"]).plot(
     ax=ax, colorbar=False, cmap="Reds", values_format="d")
-ax.set_title("Figure 7: Confusion Matrix\nModel 3 — SVM (RBF Kernel)", pad=10)
+ax.set_title("Figure 7: Confusion Matrix\nModel 3 - SVM (RBF Kernel)", pad=10)
 plt.tight_layout()
 plt.savefig(os.path.join(FIGS, "fig7_cm_svm.png"), bbox_inches="tight")
 plt.close()
@@ -466,7 +466,7 @@ ax.fill_between(fpr1, tpr1, alpha=0.05, color=BLUE)
 ax.set_xlim(0, 1); ax.set_ylim(0, 1.02)
 ax.set_xlabel("False Positive Rate (1 - Specificity)")
 ax.set_ylabel("True Positive Rate (Sensitivity)")
-ax.set_title("Figure 8: ROC Curves — All Three Models", pad=12)
+ax.set_title("Figure 8: ROC Curves - All Three Models", pad=12)
 ax.legend(loc="lower right", fontsize=11)
 ax.grid(True, alpha=0.25)
 plt.tight_layout()
@@ -475,7 +475,7 @@ plt.close()
 print("    ROC figure saved.")
 
 # =============================================================================
-# 10.  COST-OPTIMAL THRESHOLD (bonus — Model 2, best balanced model)
+# 10.  COST-OPTIMAL THRESHOLD (bonus - Model 2, best balanced model)
 # =============================================================================
 COST_FN = 15000   # approving a defaulter
 COST_FP = 2000    # rejecting a good borrower
@@ -635,7 +635,7 @@ add_heading(doc, "Step 1: Business Problem Definition", level=1)
 add_heading(doc, "1.1  The Business Question", level=2)
 add_body(doc,
     "SecureBank faces a fundamental credit risk challenge: given a prospective borrower's "
-    "financial profile, can the institution predict — before loan approval — whether that "
+    "financial profile, can the institution predict - before loan approval - whether that "
     "borrower is likely to default on repayment? Phrased as a data analytics question: "
     "Using historical loan applicant data, can a classification model reliably identify "
     "high-risk applicants at the point of application, enabling more informed lending decisions?")
@@ -663,7 +663,7 @@ add_body(doc,
 add_heading(doc, "1.4  Definition of Success", level=2)
 add_body(doc,
     "A successful outcome for the CRO is a model that (1) achieves a recall of at least 0.70 "
-    "for defaulters — i.e., correctly identifies at least 70% of future defaults — while "
+    "for defaulters - i.e., correctly identifies at least 70% of future defaults - while "
     "(2) maintaining overall precision above 0.60 to avoid an excessive rejection of "
     "creditworthy applicants, and (3) provides interpretable risk factors that can be "
     "translated into actionable underwriting guidelines. An AUC above 0.75 would indicate "
@@ -715,7 +715,7 @@ mv_list = ", ".join([f"{c} ({n} records, {n/len(df_raw)*100:.1f}%)"
                      for c, n in missing_ser.items()])
 add_body(doc,
     f"Four variables contained missing values: {mv_list}. "
-    f"Numerical missing values were imputed using each column's median — "
+    f"Numerical missing values were imputed using each column's median - "
     f"a robust strategy that avoids distortion by outliers. "
     f"Missing Employment_Duration records (categorical) were assigned the modal ordinal "
     f"value (1 = less than 1 year). Additionally, five records with negative Loan_Amount "
@@ -754,7 +754,7 @@ add_body(doc,
     f"({default_rate:.1f}%). A 30% minority class does not constitute severe imbalance "
     f"(where techniques such as SMOTE or class-weighted training would be mandatory), but "
     f"it does mean that a naive classifier predicting 'No Default' for every application "
-    f"would achieve {100-default_rate:.1f}% accuracy — an inflated and misleading score. "
+    f"would achieve {100-default_rate:.1f}% accuracy - an inflated and misleading score. "
     f"Therefore, F1-score, recall, and AUC are the primary evaluation metrics used throughout "
     f"this analysis rather than accuracy alone.")
 
@@ -820,7 +820,7 @@ add_body(doc,
     "The prediction target, Loan_Default, is a binary categorical outcome: a borrower "
     "either defaults or does not. Regression-based approaches predict a continuous quantity "
     "(e.g., how much money will be lost), whereas classification algorithms predict group "
-    "membership — which is precisely what the CRO requires. Logistic regression and Support "
+    "membership - which is precisely what the CRO requires. Logistic regression and Support "
     "Vector Machines (SVM) are well-suited to this binary classification task for the "
     "following reasons:")
 doc.add_paragraph(
@@ -839,7 +839,7 @@ doc.add_paragraph(
     "explicit feature engineering.",
     style="List Bullet")
 
-add_heading(doc, "3.2  Model 1 — Logistic Regression Baseline", level=2)
+add_heading(doc, "3.2  Model 1 - Logistic Regression Baseline", level=2)
 add_body(doc,
     f"The baseline Logistic Regression model was trained on all {len(ALL_FEATURES)} encoded "
     f"features with an L2 regularisation strength of C=1.0. Features were standardised "
@@ -871,7 +871,7 @@ add_body(doc,
 or_rows = [[row["Feature"], f"{row['Coeff']:.4f}", f"{row['Odds_Ratio']:.4f}"]
            for _, row in coef_df.head(10).iterrows()]
 add_metric_table(doc, ["Feature","Coefficient (log-odds)","Odds Ratio"], or_rows)
-cap = doc.add_paragraph("Table 3: Top-10 features by odds ratio — Model 1.")
+cap = doc.add_paragraph("Table 3: Top-10 features by odds ratio - Model 1.")
 cap.runs[0].font.italic = True; cap.runs[0].font.size = Pt(10)
 cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
 doc.add_paragraph()
@@ -919,7 +919,7 @@ for txt in interp_texts:
     doc.add_paragraph(txt, style="List Number")
 doc.add_paragraph()
 
-add_heading(doc, "3.3  Model 2 — Optimised Logistic Regression (Stepwise)", level=2)
+add_heading(doc, "3.3  Model 2 - Optimised Logistic Regression (Stepwise)", level=2)
 add_body(doc,
     "Backward stepwise elimination was used to identify the most parsimonious set of "
     "statistically significant predictors. Beginning with the full feature set, the variable "
@@ -929,7 +929,7 @@ add_body(doc,
     f"significant explanatory power after controlling for other predictors.")
 add_body(doc,
     "Features removed through backward elimination included variables whose individual "
-    "contributions became negligible when correlated predictors were present — a common "
+    "contributions became negligible when correlated predictors were present - a common "
     "outcome with one-hot encoded categorical variables that exhibit implicit correlations. "
     "The retained features represent the most parsimonious and defensible set for "
     "production use, as all included variables have demonstrably significant associations "
@@ -964,14 +964,14 @@ add_figure(doc, os.path.join(FIGS,"fig9_coeff.png"),
     "Red bars indicate positive log-odds (higher default risk); "
     "green bars indicate negative log-odds (lower default risk).", width=5.8)
 
-add_heading(doc, "3.4  Model 3 — SVM with RBF Kernel", level=2)
+add_heading(doc, "3.4  Model 3 - SVM with RBF Kernel", level=2)
 add_body(doc,
     "A Support Vector Machine with a Radial Basis Function (RBF) kernel was trained on "
     "the full scaled feature set. The RBF kernel was chosen over linear or polynomial "
     "kernels because it can model complex, non-linear decision boundaries in the "
     "high-dimensional space created by one-hot encoding. The regularisation parameter C=1.0 "
     "and kernel width gamma='scale' were used, which sets gamma to 1/(n_features × Var(X)) "
-    "— an appropriate default that balances bias and variance for standardised data.")
+    " - an appropriate default that balances bias and variance for standardised data.")
 
 add_figure(doc, os.path.join(FIGS,"fig7_cm_svm.png"),
     "Figure 7: Confusion matrix for Model 3 (SVM, RBF Kernel).", width=4.2)
@@ -1020,9 +1020,9 @@ doc.add_paragraph()
 
 add_body(doc,
     "In a lending context, precision and recall carry different business implications. "
-    "High precision means that when the model predicts a default, it is usually correct — "
+    "High precision means that when the model predicts a default, it is usually correct - "
     "minimising the rejection of creditworthy borrowers. High recall means the model "
-    "identifies most actual defaulters — minimising costly bad loans. "
+    "identifies most actual defaulters - minimising costly bad loans. "
     "Given the 7.5:1 cost asymmetry (FN $15,000 vs FP $2,000), recall should be prioritised. "
     "However, recall cannot be maximised without limit, as excessive false positives would "
     "erode customer relationships and market share.")
@@ -1077,13 +1077,13 @@ add_body(doc,
     f"with a decision threshold of {opt_thr:.2f}. This recommendation is based on three "
     f"criteria: interpretability, performance, and parsimony.")
 doc.add_paragraph(
-    f"Interpretability: Logistic regression produces odds ratios — a format familiar to "
+    f"Interpretability: Logistic regression produces odds ratios - a format familiar to "
     f"credit analysts and regulators. Should a rejected applicant challenge the decision, "
     f"the bank can point to specific, statistically validated risk factors.",
     style="List Bullet")
 doc.add_paragraph(
     f"Performance: Model 2 achieves competitive AUC = {auc2:.3f} and, at the optimal "
-    f"threshold, recall = {rec2_opt:.4f} — meaning it correctly identifies approximately "
+    f"threshold, recall = {rec2_opt:.4f} - meaning it correctly identifies approximately "
     f"{rec2_opt*100:.0f}% of future defaulters.",
     style="List Bullet")
 doc.add_paragraph(
@@ -1112,7 +1112,7 @@ add_body(doc,
 add_heading(doc, "4.4  Limitations and Monitoring", level=2)
 add_body(doc,
     "Several limitations must be acknowledged. First, the model was trained on historical "
-    "data and may degrade in accuracy if economic conditions change significantly — a "
+    "data and may degrade in accuracy if economic conditions change significantly - a "
     "phenomenon known as model drift. SecureBank should re-train the model at least "
     "annually using fresh data. Second, the training dataset covers approximately 2,559 "
     "records; a larger and more recent sample would improve generalisation. Third, the "
@@ -1162,6 +1162,6 @@ docx_path = os.path.join(BASE, "SecureBank_Loan_Default_Report.docx")
 doc.save(docx_path)
 print(f"\n  Word document saved: {docx_path}")
 print("\n" + "=" * 65)
-print("  ALL DONE — Analysis complete.")
+print("  ALL DONE - Analysis complete.")
 print(f"  Output directory: {BASE}")
 print("=" * 65)

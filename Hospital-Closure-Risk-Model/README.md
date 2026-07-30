@@ -32,7 +32,7 @@ This project builds a machine learning prediction model to identify which U.S. h
 | Records | 22,508 |
 | Unique hospitals | 4,685 |
 | Variables | 121 |
-| Time period | 2020–2024 |
+| Time period | 2020 to 2024 |
 | Coverage | 50 states + DC |
 | Facility types | Short-term general/specialty, Critical Access |
 
@@ -41,13 +41,13 @@ Data sourced from Medicare Cost Reports (CMS-2552-10) filed by hospitals to CMS.
 ## Methodology
 
 ```
-Raw Data → Clean → EDA → Feature Engineering → Risk Classification → Model Training → Evaluation → Scenario Simulation → Geographic Analysis
+Raw Data -> Clean -> EDA -> Feature Engineering -> Risk Classification -> Model Training -> Evaluation -> Scenario Simulation -> Geographic Analysis
 ```
 
 1. **Data Loading & Cleaning**-Replace `.` missing indicators, convert 30+ columns to numeric, create binary flags
 2. **Exploratory Data Analysis**-6 visualizations revealing baseline financial health; identified 217 disappeared hospitals
 3. **Feature Engineering**-Created 15+ features across 4 categories (financial health, Medicaid vulnerability, structural, trends)
-4. **Risk Classification**-Multi-factor scoring system (0–9 points) → High, Moderate, Low risk tiers
+4. **Risk Classification**-Multi-factor scoring system (0 to 9 points) -> High, Moderate, Low risk tiers
 5. **Model Training & Evaluation**-Compared Logistic Regression, Random Forest, and Gradient Boosting
 
    | Model | Accuracy | ROC AUC | High-Risk Detected |
@@ -56,7 +56,7 @@ Raw Data → Clean → EDA → Feature Engineering → Risk Classification → M
    | **Random Forest** | **0.952** | **0.991** | **89/96** |
    | Gradient Boosting | 0.987 | 0.997 | 87/96 |
 
-6. **Scenario Simulation**-Simulated 5%–30% Medicaid revenue cuts across all hospitals
+6. **Scenario Simulation**-Simulated 5%-30% Medicaid revenue cuts across all hospitals
 7. **Geographic Analysis**-State-level choropleth map of vulnerability
 
 ## Results
@@ -123,7 +123,7 @@ pip install -r requirements.txt
 
 1. Download the dataset from [NASHP Hospital Cost Tool](https://nashp.org/hospital-cost-tool/)
 2. Open `notebooks/Hospital_Closure_Risk_Model.ipynb` in Colab
-3. Upload the dataset when prompted → Run All
+3. Upload the dataset when prompted -> Run All
 
 ## Technologies
 
@@ -150,7 +150,7 @@ pip install -r requirements.txt
 2. Kaiser Family Foundation. *Implications of the 2025 Reconciliation Bill for Hospitals.* 2025.
 3. Center for American Progress. *The Truth About OBBBA's Medicaid Cuts.* August 2025.
 4. American Hospital Association. *Statement on OBBBA.* July 2025.
-5. NASHP. *Hospital Cost Tool, 2020–2024.* December 2025.
+5. NASHP. *Hospital Cost Tool, 2020 to 2024.* December 2025.
 
 
 ## Author

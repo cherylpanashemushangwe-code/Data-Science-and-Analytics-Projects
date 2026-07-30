@@ -17,7 +17,7 @@ cells = []
 # ─── TITLE ────────────────────────────────────────────────────────────────────
 cells.append(md(
 """# SecureBank Loan Default Prediction
-## BUSA 4XX — Predictive Analytics Assignment
+## BUSA 4XX - Predictive Analytics Assignment
 **Prepared for:** Chief Risk Officer, SecureBank
 **Date:** June 2026
 
@@ -156,7 +156,7 @@ ax.set_ylabel("Count"); ax.set_title("Class Distribution of Loan_Default")
 for i, v in enumerate([target_counts.get("No",0), target_counts.get("Yes",0)]):
     ax.text(i, v+20, f"{v}\\n({v/len(df)*100:.1f}%)", ha="center", fontweight="bold")
 plt.tight_layout(); plt.show()
-print("\\nThe 30/70 split is moderate imbalance — accuracy alone is misleading.")
+print("\\nThe 30/70 split is moderate imbalance - accuracy alone is misleading.")
 print("We will use Recall, F1, and AUC as primary evaluation metrics.")"""))
 
 cells.append(md(
@@ -209,7 +209,7 @@ X = df_enc[ALL_FEATURES].copy()
 y = df_enc["Target"].copy()
 
 assert X.isnull().sum().sum() == 0, "NaN remaining in feature matrix!"
-print(f"Feature matrix ready — {len(ALL_FEATURES)} features, {len(X):,} records.")"""))
+print(f"Feature matrix ready - {len(ALL_FEATURES)} features, {len(X):,} records.")"""))
 
 cells.append(md("### 2.5 EDA Visualizations"))
 
@@ -301,18 +301,18 @@ cells.append(md(
 
 ### 3.1 Why Classification?
 The target variable `Loan_Default` is **binary** (Yes / No), making this a
-**classification** — not regression — problem. We need group membership, not a
+**classification** - not regression - problem. We need group membership, not a
 continuous quantity.
 
 **Why Logistic Regression?**
-- Produces calibrated probabilities → directly interpretable as P(default)
-- Coefficients yield **odds ratios** → explainable to regulators and credit analysts
+- Produces calibrated probabilities -> directly interpretable as P(default)
+- Coefficients yield **odds ratios** -> explainable to regulators and credit analysts
 - Efficient, well-understood, baseline for binary outcomes
 
 **Why SVM (RBF kernel)?**
 - Finds the maximum-margin decision boundary, robust to high-dimensional OHE features
 - RBF kernel captures **non-linear** relationships without explicit feature engineering
-- Strong discriminatory power — useful as a performance benchmark
+- Strong discriminatory power - useful as a performance benchmark
 
 ### 3.2 Train / Test Split & Scaling
 """))
@@ -337,7 +337,7 @@ X_tr_df = pd.DataFrame(X_tr_sc, columns=ALL_FEATURES)
 X_te_df = pd.DataFrame(X_te_sc, columns=ALL_FEATURES)
 print("\\nScaling complete.")"""))
 
-cells.append(md("### 3.3 Model 1 — Logistic Regression (Baseline, All Features)"))
+cells.append(md("### 3.3 Model 1 - Logistic Regression (Baseline, All Features)"))
 
 cells.append(code(
 """# Train using all 37 features; C=1.0 L2 regularisation
@@ -367,7 +367,7 @@ cells.append(code(
 fig, ax = plt.subplots(figsize=(5.5, 4.5))
 ConfusionMatrixDisplay(cm1, display_labels=["No Default","Default"]).plot(
     ax=ax, colorbar=False, cmap="Blues", values_format="d")
-ax.set_title("Figure 5: Confusion Matrix — Model 1 (LR Baseline)", pad=10)
+ax.set_title("Figure 5: Confusion Matrix - Model 1 (LR Baseline)", pad=10)
 plt.tight_layout(); plt.show()
 
 tn,fp,fn,tp = cm1.ravel()
@@ -376,7 +376,7 @@ print(f"Cost of errors (test set): FN x $15,000 = ${fn*15000:,}  |  FP x $2,000 
 print(f"Total error cost: ${fn*15000 + fp*2000:,}")"""))
 
 cells.append(code(
-"""# Odds ratios — top risk-increasing and risk-reducing features
+"""# Odds ratios - top risk-increasing and risk-reducing features
 coef_df = pd.DataFrame({
     "Feature":    ALL_FEATURES,
     "Coefficient": lr1.coef_[0],
@@ -395,21 +395,21 @@ cells.append(md(
 **Note:** Features were standardised, so each odds ratio represents the effect of
 a **1-standard-deviation** increase in that variable.
 
-1. **Loan_Duration_Months** — A 1-SD increase in loan duration multiplies the odds
+1. **Loan_Duration_Months** - A 1-SD increase in loan duration multiplies the odds
    of default by approximately 1.36 (36% increase). Longer commitment periods expose
    the bank to greater income and life-event uncertainty.
 
-2. **Installment_Rate_Pct** — A 1-SD increase in the instalment-to-income ratio
+2. **Installment_Rate_Pct** - A 1-SD increase in the instalment-to-income ratio
    increases odds of default by ~35%. Higher payment burden relative to income is a
    classic predictor of repayment stress.
 
-3. **Checking_Ord** (risk-reducing) — A 1-SD improvement in checking account balance
+3. **Checking_Ord** (risk-reducing) - A 1-SD improvement in checking account balance
    status reduces odds of default by more than half (OR ≈ 0.44). This is the
-   strongest protective signal in the dataset — liquid checking accounts indicate
+   strongest protective signal in the dataset - liquid checking accounts indicate
    financial health and buffer capacity.
 """))
 
-cells.append(md("### 3.4 Model 2 — Optimised Logistic Regression (Backward Elimination)"))
+cells.append(md("### 3.4 Model 2 - Optimised Logistic Regression (Backward Elimination)"))
 
 cells.append(code(
 """def backward_elim(X_df, y_ser, threshold=0.05):
@@ -433,7 +433,7 @@ cells.append(code(
                 removed_log.append((worst_f, round(worst_p,4)))
                 print(f"  Iter {itr:3d}: removed '{worst_f}'  (p={worst_p:.4f})")
             else:
-                print(f"  Converged — {len(features)} features remain (max p={worst_p:.4f})")
+                print(f"  Converged - {len(features)} features remain (max p={worst_p:.4f})")
                 break
         except Exception as exc:
             print(f"  Stopped at iter {itr}: {exc}"); break
@@ -474,7 +474,7 @@ cells.append(code(
 fig, ax = plt.subplots(figsize=(5.5, 4.5))
 ConfusionMatrixDisplay(cm2, display_labels=["No Default","Default"]).plot(
     ax=ax, colorbar=False, cmap="Greens", values_format="d")
-ax.set_title("Figure 6: Confusion Matrix — Model 2 (LR Optimised)", pad=10)
+ax.set_title("Figure 6: Confusion Matrix - Model 2 (LR Optimised)", pad=10)
 plt.tight_layout(); plt.show()
 
 tn2,fp2,fn2,tp2 = cm2.ravel()
@@ -503,10 +503,10 @@ ax.set_title("Figure 9: Model 2 Coefficients\\n"
              "(Red = Increases Default Risk  |  Green = Reduces Default Risk)", pad=10)
 plt.tight_layout(); plt.show()"""))
 
-cells.append(md("### 3.5 Model 3 — SVM with RBF Kernel"))
+cells.append(md("### 3.5 Model 3 - SVM with RBF Kernel"))
 
 cells.append(code(
-"""# RBF kernel — maps features to infinite-dimensional space via Gaussian similarity
+"""# RBF kernel - maps features to infinite-dimensional space via Gaussian similarity
 # C=1.0 (regularisation), gamma='scale' = 1/(n_features * Var(X))
 svm = SVC(kernel="rbf", probability=True, random_state=42, C=1.0, gamma="scale")
 svm.fit(X_tr_sc, y_train)
@@ -533,14 +533,14 @@ cells.append(code(
 """fig, ax = plt.subplots(figsize=(5.5, 4.5))
 ConfusionMatrixDisplay(cm3, display_labels=["No Default","Default"]).plot(
     ax=ax, colorbar=False, cmap="Reds", values_format="d")
-ax.set_title("Figure 7: Confusion Matrix — Model 3 (SVM RBF)", pad=10)
+ax.set_title("Figure 7: Confusion Matrix - Model 3 (SVM RBF)", pad=10)
 plt.tight_layout(); plt.show()
 
 tn3,fp3,fn3,tp3 = cm3.ravel()
 print(f"TP={tp3}  FP={fp3}  FN={fn3}  TN={tn3}")
 print(f"Total error cost: ${fn3*15000 + fp3*2000:,}")"""))
 
-cells.append(md("### 3.6 ROC Curves — All Three Models"))
+cells.append(md("### 3.6 ROC Curves - All Three Models"))
 
 cells.append(code(
 """fig, ax = plt.subplots(figsize=(8, 7))
@@ -552,7 +552,7 @@ ax.fill_between(fpr1, tpr1, alpha=0.06, color=BLUE)
 ax.set_xlim(0,1); ax.set_ylim(0,1.02)
 ax.set_xlabel("False Positive Rate (1 - Specificity)")
 ax.set_ylabel("True Positive Rate (Sensitivity)")
-ax.set_title("Figure 8: ROC Curves — All Three Models", pad=12)
+ax.set_title("Figure 8: ROC Curves - All Three Models", pad=12)
 ax.legend(loc="lower right", fontsize=11)
 ax.grid(True, alpha=0.25); plt.tight_layout(); plt.show()"""))
 
@@ -626,7 +626,7 @@ cells.append(md(
 
 ### 4.2 Model Recommendation
 
-**Recommended model: LR Optimised (Model 2) with threshold ≈ 0.10–0.12**
+**Recommended model: LR Optimised (Model 2) with threshold ≈ 0.10 to 0.12**
 
 - **Interpretable**: Odds ratios can be presented to regulators and applicants
 - **Parsimonious**: 17 statistically significant features instead of 37
@@ -646,7 +646,7 @@ discrimination under the Equal Credit Opportunity Act. Both variables should be
 
 ### 4.4 Limitations
 
-1. **Model drift**: Economic conditions change — retrain annually
+1. **Model drift**: Economic conditions change - retrain annually
 2. **Sample size**: ~2,559 records limits generalisation
 3. **No macroeconomic features**: Interest rates and unemployment affect default rates
 4. **Threshold sensitivity**: The optimal threshold depends on the assumed cost estimates

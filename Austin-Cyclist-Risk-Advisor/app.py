@@ -64,7 +64,7 @@ def load_data():
         st.error("Could not load the crash dataset. Please ensure bike_crash-B-PF307G4M.csv is available.")
         st.stop()
 
-    # Parse HHMM integer → hour
+    # Parse HHMM integer -> hour
     df["Crash Time"] = pd.to_numeric(df["Crash Time"], errors="coerce")
     df["Hour"] = (df["Crash Time"] // 100).clip(0, 23).astype("Int64")
 
@@ -117,9 +117,9 @@ def compute_risk(hour: int, day: str, surface: str):
     Returns (score 0-100, label, css_class, recommendation, exact_count)
 
     score components:
-      50%  hour risk  — how many incidents fell in this hour vs the worst hour
-      25%  day risk   — same logic for day-of-week
-      25%  surface severity — mean severity score on this surface vs dataset max (4)
+      50%  hour risk - how many incidents fell in this hour vs the worst hour
+      25%  day risk - same logic for day-of-week
+      25%  surface severity - mean severity score on this surface vs dataset max (4)
     """
     h_risk  = hour_counts.get(hour, 0) / max_hour          # 0-1
     d_risk  = day_counts.get(day,   0) / max_day            # 0-1
@@ -331,7 +331,7 @@ with tab1:
                         xaxis=dict(tickmode="linear", dtick=1))
     st.plotly_chart(fig_h, width="stretch")
     st.caption(
-        "Evening commute hours (4–7 PM) consistently account for the highest crash volume — "
+        "Evening commute hours (4 to 7 PM) consistently account for the highest crash volume - "
         "aligning with higher traffic and lower light conditions."
     )
 
@@ -423,7 +423,7 @@ with tab3:
 
     st.caption(
         "Non-incapacitating and possible-injury crashes make up the bulk of incidents, "
-        "but fatal and incapacitating crashes remain a significant share — underscoring "
+        "but fatal and incapacitating crashes remain a significant share - underscoring "
         "the real danger cyclists face in Austin traffic."
     )
 
@@ -469,7 +469,7 @@ with tab4:
         st.plotly_chart(fig_spd, width="stretch")
 
     st.caption(
-        "Higher speed-limit roads are associated with fewer total incidents but higher average severity — "
+        "Higher speed-limit roads are associated with fewer total incidents but higher average severity - "
         "crashes at speed are more likely to be incapacitating or fatal."
     )
 
@@ -511,7 +511,7 @@ st.plotly_chart(fig_y, width="stretch")
 st.caption(
     "Incident counts reflect both actual risk and changes in cycling volume. "
     "A rise in total crashes alongside a growing cycling population does not necessarily "
-    "mean per-ride risk is increasing — but the trend warrants continued city investment in infrastructure."
+    "mean per-ride risk is increasing - but the trend warrants continued city investment in infrastructure."
 )
 
 
@@ -536,7 +536,7 @@ col_i1.info(
 )
 col_i2.info(
     f"**📅 Riskiest day:** {peak_day}\n\n"
-    "Historically the highest crash volume day — likely driven by commuter patterns."
+    "Historically the highest crash volume day - likely driven by commuter patterns."
 )
 col_i3.info(
     f"**🌧️ Wet vs Dry severity:** {wet_sev:.2f} vs {dry_sev:.2f}\n\n"
@@ -544,7 +544,7 @@ col_i3.info(
 )
 
 st.info(
-    f"**⚠️ Fatal crash share:** {fatal_pct}% of all recorded incidents resulted in a fatality — "
+    f"**⚠️ Fatal crash share:** {fatal_pct}% of all recorded incidents resulted in a fatality - "
     "a stark reminder that cyclist-vehicle crashes carry life-threatening consequences."
 )
 
@@ -561,14 +561,14 @@ peak_yr   = int(yearly.loc[yearly["Incidents"].idxmax(), "Crash Year"])
 peak_yr_n = int(yearly["Incidents"].max())
 
 st.markdown(f"""
-**Yes — the data clearly support Austin cyclists' concerns.** Between 2010 and 2017,
+**Yes - the data clearly support Austin cyclists' concerns.** Between 2010 and 2017,
 the City of Austin recorded **{len(df):,} cyclist-vehicle crashes**. Key findings:
 
-- **{incap_fatal_pct}% of crashes** resulted in an incapacitating injury or death — outcomes
+- **{incap_fatal_pct}% of crashes** resulted in an incapacitating injury or death - outcomes
   that carry lasting physical and financial consequences for riders.
 - Crash volume **peaked in {peak_yr}** at **{peak_yr_n} incidents** and has not returned to
   2010 levels, despite ongoing city safety programs.
-- The highest-risk window — **{peak_hour:02d}:00 on {peak_day}s** — overlaps precisely with
+- The highest-risk window - **{peak_hour:02d}:00 on {peak_day}s** - overlaps precisely with
   standard evening commute hours, when cyclists share the road with the heaviest motor
   vehicle traffic.
 - Wet-surface crashes produce measurably higher severity scores ({wet_sev:.2f} vs
@@ -577,7 +577,7 @@ the City of Austin recorded **{len(df):,} cyclist-vehicle crashes**. Key finding
 
 The pattern is consistent and statistically meaningful across eight years of data: Austin
 cyclists face genuine, recurring danger. The cyclists' call for stronger infrastructure
-investment — protected lanes, better intersection signaling, and improved road surfaces —
+investment - protected lanes, better intersection signaling, and improved road surfaces - 
 is well supported by the evidence.
 """)
 
@@ -618,7 +618,7 @@ with st.expander("🔍 Explore the Raw Data"):
 # FOOTER
 st.markdown("---")
 st.caption(
-    "**Data source:** City of Austin cyclist-vehicle crash records (2010–2017). "
+    "**Data source:** City of Austin cyclist-vehicle crash records (2010 to 2017). "
     "This application surfaces historical patterns only. "
     "It does not predict future incidents and should not replace safe riding practices. "
     "Always follow local traffic laws and wear appropriate protective gear."

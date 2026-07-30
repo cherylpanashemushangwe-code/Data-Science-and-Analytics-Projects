@@ -71,7 +71,7 @@ Three models were trained on an 80/20 stratified split of ~2,559 applicants (37 
 5. **Savings balance** - little or no savings means no financial buffer.
 
 **Recommendation to the CRO**
-- Deploy the **stepwise Logistic Regression** with a **cost-tuned threshold (~0.10–0.12)** as the primary scorecard - it is interpretable (odds ratios), parsimonious (17 features), and aligned to the cost asymmetry. Use the **SVM as a secondary validation model**.
+- Deploy the **stepwise Logistic Regression** with a **cost-tuned threshold (~0.10 to 0.12)** as the primary scorecard - it is interpretable (odds ratios), parsimonious (17 features), and aligned to the cost asymmetry. Use the **SVM as a secondary validation model**.
 - **Ethics / compliance:** `Personal_Status` (gender-related) and `Is_Foreign_Worker` (national origin) should be **excluded from production scoring** regardless of predictive power, to comply with fair-lending law (e.g., ECOA).
 - **Monitoring:** retrain at least annually; track KS-statistic and Gini monthly; retrain if AUC drops below 0.70 on live data.
 
@@ -86,13 +86,13 @@ loan-default-prediction/
 ├── data/
 │   └── loan_default.csv              # Dataset (~2,559 records, 21 variables)
 ├── notebooks/
-│   └── loan_default_analysis.ipynb   # Full analysis: cleaning → EDA → models → evaluation
+│   └── loan_default_analysis.ipynb   # Full analysis: cleaning -> EDA -> models -> evaluation
 ├── src/
 │   ├── loan_analysis.py              # Script: runs models + builds the Word report
 │   └── make_notebook.py              # Programmatically regenerates the notebook
 ├── reports/
 │   ├── SecureBank_Loan_Default_Report.docx   # Risk-assessment write-up
-│   └── figures/                      # All 10 generated charts (EDA, ROC, confusion matrices…)
+│   └── figures/                      # All 10 generated charts (EDA, ROC, confusion matrices...)
 ├── requirements.txt
 ├── LICENSE
 └── README.md
@@ -120,7 +120,7 @@ pip install -r requirements.txt
 # 4a. Explore interactively
 jupyter notebook notebooks/loan_default_analysis.ipynb
 
-# 4b. …or run the full pipeline and regenerate the report + figures
+# 4b. ...or run the full pipeline and regenerate the report + figures
 python src/loan_analysis.py
 ```
 
@@ -134,14 +134,14 @@ All paths are resolved relative to the repository, so everything runs without ed
 
 **Feature encoding**
 - **Ordinal** for naturally ranked variables (checking/savings balance, employment length, credit history).
-- **One-hot** for nominal variables (loan purpose, housing, job type, …) with `drop_first=True`.
+- **One-hot** for nominal variables (loan purpose, housing, job type, ...) with `drop_first=True`.
 - **Binary** for yes/no fields.
 
 **Modeling**
 - Standardised features (`StandardScaler`).
 - **Logistic Regression** (baseline + backward-stepwise selection via p-values in `statsmodels`).
 - **SVM** with an **RBF kernel** to capture non-linear structure.
-- Evaluation via confusion matrices, precision/recall/F1, ROC–AUC, and a **business-cost threshold analysis**.
+- Evaluation via confusion matrices, precision/recall/F1, ROC-AUC, and a **business-cost threshold analysis**.
 
 ---
 

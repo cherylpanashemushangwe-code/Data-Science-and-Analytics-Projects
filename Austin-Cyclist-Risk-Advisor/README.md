@@ -25,7 +25,7 @@ And returns one clear answer: **LOW RISK / MODERATE RISK / HIGH RISK** - with a 
 - **Low-Data Warning** - flags when fewer than 5 historical incidents match your exact conditions
 - **Safest Hours Suggestion** - shows the historically lowest-crash departure windows
 - **Interactive Charts** - crashes by hour, day of week, severity distribution, surface condition, and speed limit
-- **Year-over-Year Trend** - total incidents and fatal crashes from 2010–2017
+- **Year-over-Year Trend** - total incidents and fatal crashes from 2010 to 2017
 - **Raw Data Explorer** - filterable table of all 2,463 crash records
 
 ---
