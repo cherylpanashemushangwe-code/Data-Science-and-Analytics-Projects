@@ -1,14 +1,8 @@
--- ============================================================================
--- RetailPulse — Customer Revenue & Cohort Analytics Engine
--- 02_seed_data.sql | Realistic Synthetic Data (2020–2024)
--- ============================================================================
+-- 02_seed_data.sql 
 -- Generates ~2,000 customers, ~15,000 orders, ~35,000 line items,
 -- payments, shipping, reviews, and returns with realistic distributions.
--- ============================================================================
 
--- ============================================================================
 -- CATEGORIES (8 product categories with margin targets)
--- ============================================================================
 INSERT INTO categories (category_name, margin_target) VALUES
     ('Electronics',      0.22),
     ('Clothing',         0.55),
@@ -19,9 +13,7 @@ INSERT INTO categories (category_name, margin_target) VALUES
     ('Toys & Games',     0.48),
     ('Office Supplies',  0.52);
 
--- ============================================================================
 -- PRODUCTS (60 products across 8 categories)
--- ============================================================================
 INSERT INTO products (product_name, category_id, unit_cost, unit_price, launch_date, is_active) VALUES
     -- Electronics (category 1)
     ('Wireless Earbuds Pro',        1, 18.50, 49.99,  '2020-01-15', TRUE),
@@ -92,9 +84,7 @@ INSERT INTO products (product_name, category_id, unit_cost, unit_price, launch_d
     ('Mechanical Keyboard',         8, 28.00, 79.99,  '2022-07-20', TRUE),
     ('Laptop Stand Aluminum',       8, 14.00, 44.99,  '2023-05-01', TRUE);
 
--- ============================================================================
 -- CUSTOMERS (~2,000 spread across 2020–2024 signup dates)
--- ============================================================================
 -- Uses generate_series + arrays of common names for realistic distribution.
 -- Signup volume grows ~20% YoY to mirror real e-commerce growth.
 
@@ -154,9 +144,7 @@ SELECT
 
 FROM generate_series(1, 2000) AS gs;
 
--- ============================================================================
 -- ORDERS (~15,000 orders across 5 years)
--- ============================================================================
 -- Realistic patterns: ~8% cancelled, ~4% refunded, ~3% pending (recent only)
 
 INSERT INTO orders (customer_id, order_date, order_status)
@@ -185,9 +173,7 @@ FROM customers c
 WHERE o.customer_id = c.customer_id
   AND o.order_date < c.signup_date;
 
--- ============================================================================
 -- ORDER_ITEMS (~2.3 items per order average)
--- ============================================================================
 INSERT INTO order_items (order_id, product_id, quantity, unit_price, discount_pct)
 SELECT
     o.order_id,
@@ -218,9 +204,7 @@ CROSS JOIN LATERAL (
 ) items
 JOIN products p ON p.product_id = (1 + (random() * 59)::INT);
 
--- ============================================================================
 -- PAYMENTS (one payment per completed/refunded order)
--- ============================================================================
 INSERT INTO payments (order_id, payment_date, payment_method, amount)
 SELECT
     o.order_id,
@@ -244,9 +228,7 @@ JOIN (
 ) oi_totals ON oi_totals.order_id = o.order_id
 WHERE o.order_status IN ('completed', 'refunded');
 
--- ============================================================================
 -- SHIPPING (for completed and refunded orders)
--- ============================================================================
 INSERT INTO shipping (order_id, shipped_date, delivered_date, carrier, shipping_cost)
 SELECT
     o.order_id,
@@ -259,9 +241,7 @@ SELECT
 FROM orders o
 WHERE o.order_status IN ('completed', 'refunded');
 
--- ============================================================================
 -- PRODUCT_REVIEWS (~30% of completed orders get a review)
--- ============================================================================
 INSERT INTO product_reviews (product_id, customer_id, review_date, rating, review_text)
 SELECT DISTINCT ON (o.order_id)
     oi.product_id,
@@ -293,9 +273,7 @@ JOIN order_items oi ON oi.order_id = o.order_id
 WHERE o.order_status = 'completed'
   AND random() < 0.30;
 
--- ============================================================================
 -- RETURNS (~7% of completed order items)
--- ============================================================================
 INSERT INTO returns (order_item_id, return_date, reason, refund_amount)
 SELECT
     oi.order_item_id,
@@ -315,9 +293,7 @@ JOIN orders o ON o.order_id = oi.order_id
 WHERE o.order_status = 'completed'
   AND random() < 0.07;
 
--- ============================================================================
 -- DATA QUALITY CHECK
--- ============================================================================
 SELECT 'customers'      AS tbl, COUNT(*) AS row_count FROM customers
 UNION ALL
 SELECT 'categories',           COUNT(*) FROM categories
