@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-# ── Config ────────────────────────────────────────────────────────────────────
+#Config 
 parser = argparse.ArgumentParser()
 parser.add_argument("--state", default="MA")
 parser.add_argument("--year",  type=int, default=2023)
@@ -53,7 +53,7 @@ RACE_MAP = {
 }
 
 
-# ── Download ──────────────────────────────────────────────────────────────────
+#Download
 print(f"Downloading HMDA {args.year} - {args.state} ...")
 url = (
     f"https://ffiec.cfpb.gov/v2/data-browser-api/view/csv"
@@ -74,7 +74,7 @@ raw = pd.concat(chunks, ignore_index=True)
 print(f"  {len(raw):,} records downloaded")
 
 
-# ── Clean ─────────────────────────────────────────────────────────────────────
+#Clean 
 df = raw[raw["action_taken"].isin([1, 3])].copy()
 df["denied"] = (df["action_taken"] == 3).astype(int)
 df["approved"] = 1 - df["denied"]
@@ -122,11 +122,8 @@ df["income_bracket"] = pd.cut(
 df["county_code"] = df["county_code"].astype(str).str.zfill(5)
 df["high_cost_loan"] = (df["rate_spread"] > 1.5).astype(float)
 
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# TABLE 1 - Main fact table  (one row per application)
-# Power BI: import as "Applications"
-# ═══════════════════════════════════════════════════════════════════════════════
+#TABLE 1-Main fact table  (one row per application)
+#Power BI: import as "Applications"
 fact_cols = [
     "year", "state", "county_code", "race", "sex",
     "income", "loan_amount", "dti", "ltv", "interest_rate", "rate_spread",
@@ -137,11 +134,8 @@ fact = df[[c for c in fact_cols if c in df.columns]].copy()
 fact.to_csv(OUT / "applications.csv", index=False)
 print(f"  Table 1 saved -> powerbi_data/applications.csv  ({len(fact):,} rows)")
 
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# TABLE 2 - Disparity ratios by race  (pre-aggregated for KPI visuals)
-# Power BI: import as "Disparity"
-# ═══════════════════════════════════════════════════════════════════════════════
+#TABLE 2-Disparity ratios by race  (pre-aggregated for KPI visuals)
+#Power BI: import as "Disparity"
 disp = (
     df.groupby("race")["denied"]
     .agg(applications="count", denials="sum", denial_rate="mean")
@@ -157,11 +151,8 @@ disp["state"]            = args.state
 disp.to_csv(OUT / "disparity.csv", index=False)
 print(f"  Table 2 saved -> powerbi_data/disparity.csv  ({len(disp)} rows)")
 
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# TABLE 3 - Income bracket × Race  (for income analysis visual)
-# Power BI: import as "IncomeRace"
-# ═══════════════════════════════════════════════════════════════════════════════
+#TABLE 3-Income bracket × Race  (for income analysis visual)
+#Power BI: import as "IncomeRace"
 income_race = (
     df[df["race"].isin(RACES) & df["income_bracket"].notna()]
     .groupby(["income_bracket", "race"], observed=True)["denied"]
@@ -172,7 +163,7 @@ income_race = income_race[income_race["applications"] >= 20]
 income_race["year"]  = args.year
 income_race["state"] = args.state
 
-# Add bracket sort order for correct axis ordering in Power BI
+#Add bracket sort order for correct axis ordering in Power BI
 bracket_order = {"<$50k": 1, "$50-75k": 2, "$75-100k": 3,
                  "$100-150k": 4, "$150-200k": 5, "$200k+": 6}
 income_race["bracket_sort"] = income_race["income_bracket"].map(bracket_order)
@@ -180,11 +171,8 @@ income_race["bracket_sort"] = income_race["income_bracket"].map(bracket_order)
 income_race.to_csv(OUT / "income_race.csv", index=False)
 print(f"  Table 3 saved -> powerbi_data/income_race.csv  ({len(income_race)} rows)")
 
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# TABLE 4 - Geographic summary by county  (for map visual)
-# Power BI: import as "Geography"
-# ═══════════════════════════════════════════════════════════════════════════════
+#TABLE 4-Geographic summary by county  (for map visual)
+#Power BI: import as "Geography"
 geo = (
     df.groupby("county_code")
     .agg(
@@ -204,7 +192,7 @@ geo["county_fips"]   = geo["county_code"].str[2:]
 geo["year"]          = args.year
 geo["state"]         = args.state
 
-# Risk tier for color coding in Power BI
+#Risk tier for color coding in Power BI
 def risk_tier(rate):
     if rate >= 0.30:   return "High Risk"
     if rate >= 0.20:   return "Medium Risk"
@@ -216,11 +204,9 @@ geo.to_csv(OUT / "geography.csv", index=False)
 print(f"  Table 4 saved -> powerbi_data/geography.csv  ({len(geo)} rows)")
 
 
-# ── Summary ───────────────────────────────────────────────────────────────────
+#Summary
 print(f"""
-═══════════════════════════════════════════════════════
   Export complete - {args.year} | {args.state}
-═══════════════════════════════════════════════════════
   Files in:  mortgage-fairness/powerbi_data/
 
   1. applications.csv - {len(fact):,} rows   (main fact table)
@@ -229,7 +215,7 @@ print(f"""
   4. geography.csv - {len(geo)} rows    (county-level denial rates)
 
   Next: open Power BI Desktop and follow POWERBI_GUIDE.md
-═══════════════════════════════════════════════════════
+  
 Overall denial rate : {df['denied'].mean():.1%}
 White denial rate   : {ref:.1%}
 """)
