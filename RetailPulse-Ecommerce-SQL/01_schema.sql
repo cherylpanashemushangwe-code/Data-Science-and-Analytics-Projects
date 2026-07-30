@@ -16,9 +16,7 @@ DROP TABLE IF EXISTS products CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS customers CASCADE;
 
--- 
--- 1. CUSTOMERS
--- 
+-- 1. CUSTOMERS 
 CREATE TABLE customers (
     customer_id       SERIAL PRIMARY KEY,
     first_name        VARCHAR(50)  NOT NULL,
@@ -32,18 +30,15 @@ CREATE TABLE customers (
     ))
 );
 
--- 
--- 2. CATEGORIES
--- 
+-- 2. CATEGORIES 
 CREATE TABLE categories (
     category_id   SERIAL PRIMARY KEY,
     category_name VARCHAR(60)  NOT NULL UNIQUE,
     margin_target NUMERIC(4,2) -- target gross margin %
 );
 
--- 
 -- 3. PRODUCTS
--- 
+
 CREATE TABLE products (
     product_id    SERIAL PRIMARY KEY,
     product_name  VARCHAR(120) NOT NULL,
@@ -54,9 +49,7 @@ CREATE TABLE products (
     is_active     BOOLEAN       DEFAULT TRUE
 );
 
--- 
 -- 4. ORDERS
--- 
 CREATE TABLE orders (
     order_id      SERIAL PRIMARY KEY,
     customer_id   INT  NOT NULL REFERENCES customers(customer_id),
@@ -66,9 +59,7 @@ CREATE TABLE orders (
     ))
 );
 
--- 
 -- 5. ORDER_ITEMS (junction table - one order can have many products)
--- 
 CREATE TABLE order_items (
     order_item_id SERIAL PRIMARY KEY,
     order_id      INT NOT NULL REFERENCES orders(order_id),
@@ -78,9 +69,7 @@ CREATE TABLE order_items (
     discount_pct  NUMERIC(4,2) DEFAULT 0   -- applied discount
 );
 
--- 
--- 6. PAYMENTS
--- 
+-- 6. PAYMENTS 
 CREATE TABLE payments (
     payment_id     SERIAL PRIMARY KEY,
     order_id       INT NOT NULL REFERENCES orders(order_id),
@@ -91,9 +80,7 @@ CREATE TABLE payments (
     amount         NUMERIC(10,2) NOT NULL
 );
 
--- 
 -- 7. SHIPPING
--- 
 CREATE TABLE shipping (
     shipping_id    SERIAL PRIMARY KEY,
     order_id       INT NOT NULL REFERENCES orders(order_id),
@@ -103,9 +90,7 @@ CREATE TABLE shipping (
     shipping_cost  NUMERIC(8,2)
 );
 
--- 
 -- 8. PRODUCT_REVIEWS
--- 
 CREATE TABLE product_reviews (
     review_id    SERIAL PRIMARY KEY,
     product_id   INT  NOT NULL REFERENCES products(product_id),
@@ -115,9 +100,7 @@ CREATE TABLE product_reviews (
     review_text  TEXT
 );
 
--- 
 -- 9. RETURNS
--- 
 CREATE TABLE returns (
     return_id     SERIAL PRIMARY KEY,
     order_item_id INT  NOT NULL REFERENCES order_items(order_item_id),
@@ -128,9 +111,7 @@ CREATE TABLE returns (
     refund_amount NUMERIC(10,2) NOT NULL
 );
 
--- 
 -- INDEXES 
--- 
 CREATE INDEX idx_orders_customer     ON orders(customer_id);
 CREATE INDEX idx_orders_date         ON orders(order_date);
 CREATE INDEX idx_order_items_order   ON order_items(order_id);
