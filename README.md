@@ -13,6 +13,7 @@ A collection of data science and analytics projects from my graduate studies and
 | [Mortgage Fairness](Mortgage-Fairness) | Fairness analysis of mortgage lending with a Power BI dashboard | Python, Power BI |
 | [Customer Churn Prediction](Customer-Churn-Prediction) | Telecom churn modeling with a Power BI dashboard | Python, scikit-learn, Power BI |
 | [RetailPulse E-Commerce SQL](RetailPulse-Ecommerce-SQL) | E-commerce analytics: schema, multi-join queries, and a dashboard | SQL, Power BI |
+| [HMDA Mortgage Lending Analysis](HMDA-Mortgage-Lending-Analysis) | Loan-type mismatch modeling on 465,939 mortgages from 2024 federal HMDA data | Python, K-Means, Tableau |
 | [HIV and Economic Indicators SQL](HIV-Economic-SQL-Analysis) | MySQL analysis joining public health and economic data | SQL, MySQL |
 | [Austin Cyclist Risk Advisor](Austin-Cyclist-Risk-Advisor) | Interactive Streamlit app for bicycle crash risk | Python, Streamlit, Plotly |
 | [Pharmaceutical Document AI](Pharma-Document-AI) | OCR plus Retrieval-Augmented Generation over documents | Python, LlamaIndex, Tesseract |
