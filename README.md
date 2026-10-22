@@ -12,8 +12,9 @@ A collection of data science and analytics projects from my graduate studies and
 | [Loan Default Prediction](Loan-Default-Prediction) | Credit risk classification framed as a cost-optimal lending policy | Python, scikit-learn |
 | [Mortgage Fairness](Mortgage-Fairness) | Fairness analysis of mortgage lending with a Power BI dashboard | Python, Power BI |
 | [Customer Churn Prediction](Customer-Churn-Prediction) | Telecom churn modeling with a Power BI dashboard | Python, scikit-learn, Power BI |
-| [RetailPulse E-Commerce SQL](RetailPulse-Ecommerce-SQL) | E-commerce analytics: schema, multi-join queries, and a dashboard | SQL, Power BI |
-| [HMDA Mortgage Lending Analysis](HMDA-Mortgage-Lending-Analysis) | Loan-type mismatch modeling on 465,939 mortgages from 2024 federal HMDA data | Python, K-Means, Tableau |
+| [RetailPulse E-Commerce SQL](RetailPulse-Ecommerce-SQL) | Ecommerce analytics: 9 table schema, 20 queries on revenue, retention, margins, and carriers, plus a dashboard | SQL, Power BI |
+| [HMDA Mortgage Lending Analysis](HMDA-Mortgage-Lending-Analysis) | Team project: loan type mismatch modeling on 465,939 mortgages from 2024 federal HMDA data | Python, K-Means, Tableau |
+| [Boston 311 Service Performance](Boston-311-Service-Performance) | Team project: what drives timely closure across 1.2M city service requests, 2015 to 2019 | R, logistic regression, LASSO |
 | [HIV and Economic Indicators SQL](HIV-Economic-SQL-Analysis) | MySQL analysis joining public health and economic data | SQL, MySQL |
 | [Austin Cyclist Risk Advisor](Austin-Cyclist-Risk-Advisor) | Interactive Streamlit app for bicycle crash risk | Python, Streamlit, Plotly |
 | [Pharmaceutical Document AI](Pharma-Document-AI) | OCR plus Retrieval-Augmented Generation over documents | Python, LlamaIndex, Tesseract |
